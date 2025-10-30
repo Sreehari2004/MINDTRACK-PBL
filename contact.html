@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - MindTrack</title>
+    <link rel="stylesheet" href="static/styles.css">
+    <style>
+        /* Styles for the success and error messages */
+        .message {
+            display: none;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        
+        .success-message {
+            background-color: #4caf50;
+            color: white;
+        }
+        
+        .error-message {
+            background-color: #f44336;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <img src="https://api.iconify.design/lucide:brain.svg?color=%23805ad5" alt="MindTrack Logo" class="logo-img">
+                <span>MindTrack</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="assessment.html">Assessment</a></li>         
+                <li><a href="about.html">About</a></li>  
+                <li><a href="stress-videos.html">Serenity Stream</a></li>
+                <li><a href="stress-games.html">Relaxation Hub</a></li>
+                <li><a href="contact.html">Contact</a></li>     
+                <li><a href="emergency.html">Emergency</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <main>
+        <section class="contact">
+            <div class="container">
+                <h1>Contact Us</h1>
+                <p class="lead">Have questions or concerns? We're here to help. Reach out to us using any of the methods below.</p>
+                
+                <div class="contact-grid">
+                    <div class="contact-info">
+                        <div class="info-item">
+                            <img src="https://api.iconify.design/lucide:mail.svg?color=%23805ad5" alt="Email" class="info-icon">
+                            <div>
+                                <h3>Email</h3>
+                                <p>support@mindtrack.com</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <img src="https://api.iconify.design/lucide:phone.svg?color=%23805ad5" alt="Phone" class="info-icon">
+                            <div>
+                                <h3>Phone</h3>
+                                <p>1234567890</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <img src="https://api.iconify.design/lucide:map-pin.svg?color=%23805ad5" alt="Address" class="info-icon">
+                            <div>
+                                <h3>Address</h3>
+                                <p>123 Mental Health Street<br>Wellness City, WC 12345</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <form id="contactForm" class="contact-form">
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" id="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" rows="4" required></textarea>
+                        </div>
+                        <button type="submit" class="submit-button">
+                            Send Message
+                            <img src="https://api.iconify.design/lucide:send.svg?color=white" alt="Send" class="button-icon">
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Messages (initially hidden) -->
+                <div id="successMessage" class="message success-message">
+                    <p>Thank you for your message! Your data has been successfully submitted.</p>
+                </div>
+                
+                <div id="errorMessage" class="message error-message">
+                    <p>There was an error submitting your message. Please try again later.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p class="copyright">© 2024 MindTrack. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Get form and message elements
+        const contactForm = document.getElementById('contactForm');
+        const successMessage = document.getElementById('successMessage');
+        const errorMessage = document.getElementById('errorMessage');
+        
+        // Add event listener for form submission
+        contactForm.addEventListener('submit', function(event) {
+            // Prevent the default form submission
+            event.preventDefault();
+            
+            // Collect form data
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                message: document.getElementById('message').value,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Send data to Flask API
+            fetch('http://127.0.0.1:5000/api/submit-contact', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Success:', data);
+                
+                // Show success message
+                successMessage.style.display = 'block';
+                errorMessage.style.display = 'none';
+                
+                // Reset form
+                contactForm.reset();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                
+                // Show error message
+                errorMessage.style.display = 'block';
+                successMessage.style.display = 'none';
+            });
+        });
+    </script>
+</body>
+</html>

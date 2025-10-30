@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindTrack - Stress Relief Games & Tools</title>
+    <!-- Link the CSS file -->
+    <link rel="stylesheet" href="static/stress_games.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Enhanced Breathing Bubble Animation (can be in stress_games.css too) */
+        @keyframes breathing-cycle-enhanced {
+            0% { transform: scale(0.75); opacity: 0.6; box-shadow: 0 0 10px rgba(128, 90, 213, 0.3); }
+            50% { transform: scale(1.35); opacity: 1; box-shadow: 0 0 25px rgba(128, 90, 213, 0.7); }
+            100% { transform: scale(0.75); opacity: 0.6; box-shadow: 0 0 10px rgba(128, 90, 213, 0.3); }
+        }
+        @keyframes breathe-text-fade-sync { /* Simple text fade based on bubble */
+            0%, 100% { content: "Exhale"; opacity: 0.7; }
+            40% { opacity: 1; }
+            50% { content: "Inhale"; opacity: 1; }
+             60% { opacity: 1; }
+            90% { opacity: 0.7; }
+        }
+        .bubble {
+            /* Ensure previous bubble styles are present */
+            animation: breathing-cycle-enhanced 8s ease-in-out infinite; /* Use enhanced animation */
+        }
+         /* Optional: Dynamic text - uncomment if you want text change */
+        /* .bubble-text::before {
+            content: "Exhale";
+            position: absolute;
+            animation: breathe-text-fade-sync 8s ease-in-out infinite;
+        }
+        .bubble-text { color: transparent; } // Hide original static text */
+
+         /* Style for Memory Card matched state */
+        .memory-card.matched {
+            opacity: 0.5;
+            transform: rotateY(180deg) scale(0.95); /* Keep flipped but indicate matched */
+            cursor: default;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.5); /* Optional green glow for matched */
+        }
+        .memory-card.flip {
+             transform: rotateY(180deg);
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container">
+             <a href="index.html" class="logo">
+                <img src="https://api.iconify.design/lucide:brain.svg?color=%23805ad5" alt="MindTrack Logo" class="logo-img">
+                <span>MindTrack</span>
+            </a>
+             <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="assessment.html">Assessment</a></li>         
+                <li><a href="about.html">About</a></li>  
+                <li><a href="stress-videos.html">Serenity Stream</a></li>
+                <li><a href="stress-games.html">Relaxation Hub</a></li>
+                <li><a href="contact.html">Contact</a></li>     
+                <li><a href="emergency.html">Emergency</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="container page-content" id="games-tools">
+        <h1 class="page-title">Interactive Relaxation Tools</h1>
+        <p class="page-subtitle">Engage your mind and find calm with these simple activities.</p>
+
+        <div class="tools-grid">
+
+            <!-- Breathing Bubble Section -->
+            <section id="breathing-bubble" class="tool-card">
+                <h2><i class="fas fa-lungs icon"></i> Breathing Bubble</h2>
+                <p class="tool-description">Follow the bubble to guide your breath. Inhale as it expands, exhale as it shrinks.</p>
+                <div class="breathing-container">
+                    <div class="bubble"></div>
+                    <div class="bubble-text">Breathe</div>
+                </div>
+                <!-- Animation primarily handled by CSS -->
+            </section>
+
+            <!-- Memory Match Game Section -->
+            <section id="memory-match" class="tool-card">
+                 <h2><i class="fas fa-brain icon"></i> Memory Match</h2>
+                 <p class="tool-description">Find the matching pairs of calming images.</p>
+                 <div class="memory-game-board">
+                     <!-- Cards will be dynamically shuffled by JS -->
+                     <!-- Structure needed for JS cloning/creation if empty -->
+                     <div class="memory-card" data-framework="icon-leaf">
+                        <div class="front-face"><i class="fas fa-leaf"></i></div>
+                        <div class="back-face"><i class="fas fa-question"></i></div>
+                     </div>
+                     <div class="memory-card" data-framework="icon-spa">
+                        <div class="front-face"><i class="fas fa-spa"></i></div>
+                        <div class="back-face"><i class="fas fa-question"></i></div>
+                     </div>
+                     <div class="memory-card" data-framework="icon-dove">
+                        <div class="front-face"><i class="fas fa-dove"></i></div>
+                        <div class="back-face"><i class="fas fa-question"></i></div>
+                     </div>
+                     <div class="memory-card" data-framework="icon-sun">
+                        <div class="front-face"><i class="fas fa-sun"></i></div>
+                        <div class="back-face"><i class="fas fa-question"></i></div>
+                     </div>
+                      <div class="memory-card" data-framework="icon-moon">
+                        <div class="front-face"><i class="fas fa-moon"></i></div>
+                        <div class="back-face"><i class="fas fa-question"></i></div>
+                     </div>
+                      <div class="memory-card" data-framework="icon-heart">
+                        <div class="front-face"><i class="fas fa-heart"></i></div>
+                        <div class="back-face"><i class="fas fa-question"></i></div>
+                     </div>
+                     <!-- PAIRS -->
+                     <div class="memory-card" data-framework="icon-leaf">
+                        <div class="front-face"><i class="fas fa-leaf"></i></div>
+                        <div class="back-face"><i class="fas fa-question"></i></div>
+                     </div>
+                     <div class="memory-card" data-framework="icon-spa">
+                        <div class="front-face"><i class="fas fa-spa"></i></div>
+                        <div class="back-face"><i class="fas fa-question"></i></div>
+                     </div>
+                      <div class="memory-card" data-framework="icon-dove">
+                        <div class="front-face"><i class="fas fa-dove"></i></div>
+                        <div class="back-face"><i class="fas fa-question"></i></div>
+                     </div>
+                      <div class="memory-card" data-framework="icon-sun">
+                        <div class="front-face"><i class="fas fa-sun"></i></div>
+                        <div class="back-face"><i class="fas fa-question"></i></div>
+                     </div>
+                     <div class="memory-card" data-framework="icon-moon">
+                        <div class="front-face"><i class="fas fa-moon"></i></div>
+                        <div class="back-face"><i class="fas fa-question"></i></div>
+                     </div>
+                      <div class="memory-card" data-framework="icon-heart">
+                        <div class="front-face"><i class="fas fa-heart"></i></div>
+                        <div class="back-face"><i class="fas fa-question"></i></div>
+                     </div>
+                 </div>
+                 <button class="secondary-button restart-button" id="restart-memory">Restart Game</button>
+            </section>
+
+            <!-- Coloring Canvas Section -->
+            <section id="coloring-canvas" class="tool-card">
+                <h2><i class="fas fa-palette icon"></i> Coloring Canvas</h2>
+                <p class="tool-description">Unleash your creativity and relax with digital coloring.</p>
+                <div class="canvas-container">
+                    <!-- Canvas element -->
+                    <canvas id="drawingCanvas" width="400" height="300"></canvas>
+                </div>
+                 <div class="canvas-controls">
+                    <!-- Color Picker -->
+                    <input type="color" id="colorPicker" value="#805ad5" class="color-picker-input">
+                    <label for="colorPicker" id="colorPickerLabel" class="color-picker-label" title="Choose Color">
+                        <i class="fas fa-palette"></i>
+                    </label>
+                    <!-- Brush Size Slider -->
+                    <input type="range" id="brushSize" min="1" max="20" value="5" class="brush-slider" title="Brush Size">
+                    <span id="brushSizeValue" style="font-size: 0.9em; color: #4a5568; min-width: 20px; text-align: right;">5</span> <!-- Display value -->
+                    <!-- Clear Button -->
+                    <button id="clearCanvasBtn" class="secondary-button clear-canvas-button" title="Clear Canvas"><i class="fas fa-trash-alt"></i> Clear</button>
+                </div>
+            </section>
+
+            <!-- Affirmation Generator Section -->
+            <section id="affirmation-generator" class="tool-card">
+                <h2><i class="fas fa-lightbulb icon"></i> Daily Affirmation</h2>
+                <p class="tool-description">Get a dose of positivity. Click the button for an uplifting thought.</p>
+                <div class="affirmation-display">
+                    <!-- Affirmation text appears here -->
+                    <p id="affirmation-text">"You are capable of amazing things."</p>
+                </div>
+                <!-- Button to generate affirmation -->
+                <button id="generate-affirmation" class="primary-button generate-affirmation-button">
+                    <i class="fas fa-sync-alt"></i> New Affirmation
+                </button>
+            </section>
+
+        </div> <!-- End tools-grid -->
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p class="copyright">© 2024 MindTrack. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- ================================== -->
+    <!--          EMBEDDED JAVASCRIPT       -->
+    <!-- ================================== -->
+    <script>
+        // Wait for the HTML document to be fully loaded before running scripts
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- Affirmation Generator Logic ---
+            const affirmationButton = document.getElementById('generate-affirmation');
+            const affirmationTextElement = document.getElementById('affirmation-text');
+
+            const affirmations = [
+                "You are strong and capable.",
+                "You radiate positivity and calm.",
+                "You are worthy of peace and happiness.",
+                "You trust in your ability to handle challenges.",
+                "You breathe in calm, you breathe out stress.",
+                "You are enough, just as you are.",
+                "You choose peace over worry.",
+                "You are resilient and can overcome obstacles.",
+                "You deserve moments of rest and relaxation.",
+                "You are creating a peaceful space within yourself.",
+                "Every breath you take brings more calm.",
+                "You are in control of your thoughts and feelings.",
+                "You let go of what you cannot control.",
+                "You are grounded and centered.",
+                "Today, you choose joy and ease."
+            ];
+
+            if (affirmationButton && affirmationTextElement) {
+                affirmationButton.addEventListener('click', () => {
+                    const randomIndex = Math.floor(Math.random() * affirmations.length);
+                    affirmationTextElement.textContent = `"${affirmations[randomIndex]}"`;
+                });
+            } else {
+                console.error("Affirmation elements not found!");
+            }
+
+            // --- Coloring Canvas Logic ---
+            const canvas = document.getElementById('drawingCanvas');
+            const colorPicker = document.getElementById('colorPicker');
+            const colorPickerLabel = document.getElementById('colorPickerLabel');
+            const brushSizeSlider = document.getElementById('brushSize');
+            const brushSizeValue = document.getElementById('brushSizeValue');
+            const clearButton = document.getElementById('clearCanvasBtn');
+
+            if (canvas && colorPicker && brushSizeSlider && clearButton && colorPickerLabel && brushSizeValue) {
+                const ctx = canvas.getContext('2d');
+                let isDrawing = false;
+                let lastX = 0;
+                let lastY = 0;
+
+                // Set initial canvas size (match CSS or default)
+                canvas.width = canvas.offsetWidth; // Use offsetWidth after CSS loads
+                canvas.height = canvas.offsetHeight; // Use offsetHeight
+
+                 // Set initial context properties
+                ctx.strokeStyle = colorPicker.value;
+                ctx.lineWidth = brushSizeSlider.value;
+                ctx.lineJoin = 'round';
+                ctx.lineCap = 'round';
+
+                function draw(e) {
+                    if (!isDrawing) return; // Stop drawing if mouse is not pressed
+
+                    ctx.beginPath();
+                    // Start from
+                    ctx.moveTo(lastX, lastY);
+                    // Go to
+                    ctx.lineTo(e.offsetX, e.offsetY);
+                    ctx.stroke();
+
+                    // Update last coordinates
+                    [lastX, lastY] = [e.offsetX, e.offsetY];
+                }
+
+                canvas.addEventListener('mousedown', (e) => {
+                    isDrawing = true;
+                    [lastX, lastY] = [e.offsetX, e.offsetY]; // Start position
+                });
+
+                canvas.addEventListener('mousemove', draw);
+                canvas.addEventListener('mouseup', () => isDrawing = false);
+                canvas.addEventListener('mouseout', () => isDrawing = false); // Stop drawing if mouse leaves canvas
+
+                // Update color
+                colorPicker.addEventListener('input', (e) => {
+                     ctx.strokeStyle = e.target.value;
+                     colorPickerLabel.style.backgroundColor = e.target.value; // Update label background
+                });
+
+                 // Update label color on load
+                 colorPickerLabel.style.backgroundColor = colorPicker.value;
+
+                // Update brush size
+                brushSizeSlider.addEventListener('input', (e) => {
+                    ctx.lineWidth = e.target.value;
+                    brushSizeValue.textContent = e.target.value; // Show current size
+                });
+
+                // Clear canvas
+                clearButton.addEventListener('click', () => {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                });
+
+                // Adjust canvas size if window resizes (basic example)
+                 window.addEventListener('resize', () => {
+                    // Save drawing state if needed (more complex)
+                    const currentDrawing = ctx.getImageData(0,0, canvas.width, canvas.height);
+                    canvas.width = canvas.offsetWidth;
+                    canvas.height = canvas.offsetHeight;
+                     // Restore drawing state if needed
+                    // ctx.putImageData(currentDrawing, 0, 0);
+                    // Re-apply styles as context resets on resize
+                    ctx.strokeStyle = colorPicker.value;
+                    ctx.lineWidth = brushSizeSlider.value;
+                    ctx.lineJoin = 'round';
+                    ctx.lineCap = 'round';
+                 });
+
+
+            } else {
+                console.error("Canvas elements not found!");
+            }
+
+
+             // --- Memory Match Game Logic ---
+            const memoryGameBoard = document.querySelector('.memory-game-board');
+            const memoryCards = document.querySelectorAll('.memory-card');
+            const restartMemoryButton = document.getElementById('restart-memory');
+
+            if (memoryGameBoard && memoryCards.length > 0 && restartMemoryButton) {
+                let hasFlippedCard = false;
+                let lockBoard = false; // Prevent flipping more than 2 cards
+                let firstCard, secondCard;
+                let matchesFound = 0;
+                const totalPairs = memoryCards.length / 2;
+
+                function flipCard() {
+                    if (lockBoard) return; // Do nothing if board is locked
+                    if (this === firstCard) return; // Prevent double-clicking the same card
+
+                    this.classList.add('flip');
+
+                    if (!hasFlippedCard) {
+                        // First card flipped
+                        hasFlippedCard = true;
+                        firstCard = this;
+                        return;
+                    }
+
+                    // Second card flipped
+                    secondCard = this;
+                    lockBoard = true; // Lock board while checking
+
+                    checkForMatch();
+                }
+
+                function checkForMatch() {
+                    let isMatch = firstCard.dataset.framework === secondCard.dataset.framework;
+
+                    if (isMatch) {
+                        disableCards();
+                    } else {
+                        unflipCards();
+                    }
+                }
+
+                function disableCards() {
+                    firstCard.removeEventListener('click', flipCard);
+                    secondCard.removeEventListener('click', flipCard);
+
+                    firstCard.classList.add('matched'); // Add matched class
+                    secondCard.classList.add('matched'); // Add matched class
+
+                    matchesFound++;
+                    if (matchesFound === totalPairs) {
+                        // Optional: Add a slight delay before alerting win
+                        setTimeout(() => {
+                             alert("You found all the matches!");
+                        }, 500);
+                    }
+
+                    resetBoard();
+                }
+
+                function unflipCards() {
+                    setTimeout(() => {
+                        firstCard.classList.remove('flip');
+                        secondCard.classList.remove('flip');
+                        resetBoard();
+                    }, 1200); // Wait 1.2 seconds before flipping back
+                }
+
+                function resetBoard() {
+                    [hasFlippedCard, lockBoard] = [false, false];
+                    [firstCard, secondCard] = [null, null];
+                }
+
+                function shuffle() {
+                    matchesFound = 0; // Reset match counter
+                    memoryCards.forEach(card => {
+                        // Remove existing event listeners to prevent duplicates on restart
+                        card.removeEventListener('click', flipCard);
+                        // Add listener back
+                        card.addEventListener('click', flipCard);
+                         // Reset visual state
+                        card.classList.remove('flip', 'matched');
+                        // Generate random order for flexbox layout
+                        let randomPos = Math.floor(Math.random() * memoryCards.length);
+                        card.style.order = randomPos;
+                    });
+                    resetBoard(); // Ensure board state is reset
+                }
+
+                 // Add event listener for restart button
+                 restartMemoryButton.addEventListener('click', shuffle);
+
+                // Initial shuffle when the page loads
+                shuffle();
+
+            } else {
+                console.error("Memory game elements not found or no cards present!");
+            }
+
+        }); // End DOMContentLoaded
+    </script>
+
+</body>
+</html>

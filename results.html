@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MindTrack Assessment Results</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Your Stress Assessment Results</h1>
+    <div id="results-display"></div>
+
+    <div class="results-actions">
+      <button onclick="startNewAssessment()">Retake Assessment</button>
+      <button onclick="downloadPDF()">📦 Download Wellness Report (PDF)</button>
+    </div>
+  </div>
+
+  <script>
+    const result = JSON.parse(localStorage.getItem("assessmentResult"));
+
+    function renderResults() {
+      if (!result) {
+        document.getElementById("results-display").innerHTML = '<p>No results available.</p>';
+        return;
+      }
+
+      const { stress_score, recommendations } = result;
+
+      document.getElementById("results-display").innerHTML = `
+        <p><strong>Stress Level:</strong> ${recommendations.level}</p>
+        <p><strong>Score:</strong> ${stress_score.toFixed(2)} / 2</p>
+        <p><strong>Summary:</strong> ${recommendations.text}</p>
+        <h3>Recommended Practices:</h3>
+        <ul>
+          ${recommendations.action_plan.map(item => `<li>${item}</li>`).join('')}
+        </ul>
+        <p><strong>Helpline:</strong> Call 91-9820466726 if needed</p>
+      `;
+    }
+
+    function startNewAssessment() {
+      localStorage.removeItem("assessmentResult");
+      window.location.href = "/assessment";
+    }
+
+    function downloadPDF() {
+      if (!result) return alert("No results to download.");
+
+      fetch("/download-report", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(result),
+      })
+        .then((response) => response.blob())
+        .then((blob) => {
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.href = url;
+          link.download = "wellness_report.pdf";
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+        })
+        .catch((err) => alert("Failed to download PDF: " + err));
+    }
+
+    renderResults();
+  </script>
+</body>
+</html>

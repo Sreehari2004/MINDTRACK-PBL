@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Emergency Help - MindTrack</title>
+  <!-- Ensure this path is correct relative to your HTML file -->
+  <link rel="stylesheet" href="static/emergency.css" />
+  <!-- Font Awesome for icons (optional but helpful) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="container">
+      <!-- Using nav-logo div for grouping -->
+      <a href="index.html" class="nav-logo"> <!-- Made the logo group a link to home -->
+        <img src="https://api.iconify.design/lucide:brain.svg?color=%23805ad5" alt="MindTrack Logo" class="logo-img">
+        <span class="brand-name">MindTrack</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="assessment.html">Assessment</a></li>
+        <li><a href="about.html">About</a></li>
+         <!-- Use names decided previously if preferred -->
+        <li><a href="stress_videos.html">Serenity Stream</a></li>
+        <li><a href="stress_games.html">Relaxation Hub</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="emergency.html" class="active">Emergency</a></li> <!-- Mark as active -->
+      </ul>
+       <!-- Mobile menu button placeholder -->
+       <!-- <button class="mobile-menu-button"><i class="fas fa-bars"></i></button> -->
+    </div>
+  </nav>
+
+  <header class="header">
+    <div class="container"> <!-- Wrap header text in container for padding -->
+      <h1>Emergency Support</h1>
+      <p>If you're feeling overwhelmed, try the following techniques and reach out if needed — no login or data required.</p>
+    </div>
+  </header>
+
+   <!-- Use main tag for semantic structure -->
+  <main class="main-content container">
+    <section class="section">
+      <h2><i class="fas fa-hand-paper"></i> Grounding Technique (5-4-3-2-1)</h2> <!-- Added icon -->
+      <p>This method helps calm anxiety by anchoring you to your surroundings.</p>
+      <ul class="grounding-list">
+        <li><span>5</span> things you can see</li>
+        <li><span>4</span> things you can touch</li>
+        <li><span>3</span> things you can hear</li>
+        <li><span>2</span> things you can smell</li>
+        <li><span>1</span> thing you can taste</li>
+      </ul>
+      <div class="video-container">
+        <iframe src="https://www.youtube.com/embed/pY0Ldqwmz_Q" title="5-4-3-2-1 Grounding Exercise" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2><i class="fas fa-headphones-alt"></i> Panic Attack Relief Audio</h2> <!-- Added icon -->
+      <p>Put on your headphones and listen to calm breathing or affirmations:</p>
+      <audio controls class="audio-player">
+        <!-- Using placeholder audio -->
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+      </audio>
+      <p class="note">Note: This is placeholder audio. Replace with a relevant guided audio file if available.</p>
+    </section>
+
+    <section class="section">
+      <h2><i class="fas fa-phone-alt"></i> Emergency Helplines</h2> <!-- Added icon -->
+      <p>Remember, reaching out is a sign of strength. Use these resources if you need immediate support.</p>
+      <div class="table-container"> <!-- Added container for responsiveness -->
+        <table class="helpline-table">
+          <thead>
+            <tr>
+              <th>Country</th>
+              <th>Helpline</th>
+              <th>Contact</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>India</td><td>iCall (Mon-Sat, 10am-8pm)</td><td><a href="tel:+919152987821">+91 9152987821</a></td></tr>
+            <tr><td>India</td><td>AASRA (24x7)</td><td><a href="tel:+919820466726">+91 9820466726</a></td></tr>
+            <tr><td>USA</td><td>National Suicide Prevention Lifeline</td><td><a href="tel:988">988</a></td></tr>
+            <tr><td>UK</td><td>Samaritans (24x7)</td><td><a href="tel:116123">116 123</a></td></tr>
+            <tr><td>Canada</td><td>Talk Suicide Canada (24x7)</td><td><a href="tel:18334564566">1-833-456-4566</a></td></tr>
+            <tr><td>Australia</td><td>Lifeline (24x7)</td><td><a href="tel:131114">13 11 14</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>Disclaimer:</strong> These numbers are provided for informational purposes. Please verify them or search for local crisis lines specific to your immediate area if needed.</p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container"> <!-- Wrap footer content -->
+      <p>© 2024 MindTrack. All rights reserved.</p>
+       <!-- Removed "Made with ❤️" for a slightly more formal tone suitable for emergency page -->
+    </div>
+  </footer>
+
+</body>
+</html>

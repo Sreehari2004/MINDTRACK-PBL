@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assessment - MindTrack</title>
+    <!-- Links to your external CSS files -->
+    <link rel="stylesheet" href="static/styles.css">
+    <link rel="stylesheet" href="static/assessment.css">
+    <style>
+        /* Style for the slider value display (keep if not in external CSS) */
+        .slider-value-display {
+            text-align: center;
+            margin-top: 10px;
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #805ad5;
+        }
+        /* Style for the results message on the page */
+        #results-message { /* Ensure this ID matches the element below */
+             font-size: 1.1em;
+             margin-top: 1.5rem;
+             padding: 1rem;
+             background-color: #f7fafc; /* Example styling */
+             border: 1px solid #e2e8f0; /* Example styling */
+             border-radius: 0.5rem;   /* Example styling */
+             text-align: center;
+        }
+         /* Ensure stress bar container is visible */
+        .stress-bar-container {
+             width: 80%; /* Or use your style from CSS */
+             margin: 20px auto;
+             background-color: #ddd;
+             border-radius: 20px;
+             height: 40px;
+             overflow: hidden;
+         }
+        #stress-bar {
+            height: 100%;
+            width: 0%; /* Initial width */
+            border-radius: 20px;
+            transition: width 0.5s ease-in-out, background-color 0.5s;
+        }
+    </style>
+
+    <!-- Include jsPDF library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <img src="https://api.iconify.design/lucide:brain.svg?color=%23805ad5" alt="MindTrack Logo"
+                    class="logo-img">
+                <span>MindTrack</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="assessment.html">Assessment</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="stress-videos.html">Serenity Stream</a></li>
+                <li><a href="stress-games.html">Relaxation Hub</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="emergency.html">Emergency</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <section class="assessment">
+            <div class="container">
+                <div class="assessment-card">
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 5%;"></div>
+                    </div>
+                    <p class="question-counter">Question 1 of 20</p>
+                    <h2 id="question-text"></h2>
+
+                    <div class="slider-container">
+                        <input type="range" id="question-slider" style="width: 100%;">
+                        <div class="slider-value-display" id="slider-value">Value: </div>
+                        <div class="slider-labels">
+                            <span id="min-label"></span>
+                            <span id="max-label"></span>
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <button class="secondary-button" id="prev-btn" disabled>Previous</button>
+                        <button class="primary-button" id="next-btn">Next</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Simplified Results Section -->
+        <section class="results" style="display: none;">
+            <div class="container">
+                <h2>Your Stress Score: <span id="stress-score"></span> (0-2)</h2>
+
+                <!-- Stress Score Progress Bar -->
+                <div class="stress-bar-container">
+                    <div id="stress-bar"></div>
+                </div>
+
+                <!-- Simple message prompting download -->
+                <p id="results-message">
+                    Your assessment is complete. Download your personalized report below for detailed insights and recommendations.
+                </p>
+
+                <!-- Button to download the results as a PDF (starts disabled) -->
+                <button class="primary-button" id="download-pdf" disabled>Download Personalized Report</button>
+            </div>
+        </section>
+        <!-- End of Simplified Results Section -->
+
+    </main>
+
+    <footer>
+        <div class="container">
+            <p class="copyright">© 2024 MindTrack. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        const questions = [
+            { text: "How often do you feel anxious or worried in your daily life?", min: 1, max: 20, mid: 10.5, minLabel: "Never", maxLabel: "Extremely often" },
+            { text: "How confident do you feel about yourself and your abilities?", min: 1, max: 30, mid: 15.5, minLabel: "Very low", maxLabel: "Very high" },
+            { text: "Have you ever been diagnosed with or sought professional help for mental health issues?", min: 0, max: 1, mid: 0.5, minLabel: "No", maxLabel: "Yes" },
+            { text: "How often do you feel sad, hopeless, or lose interest in activities?", min: 1, max: 30, mid: 15.5, minLabel: "Never", maxLabel: "Very frequently" },
+            { text: "How often do you experience headaches?", min: 1, max: 5, mid: 3, minLabel: "Never", maxLabel: "Very frequently" },
+            { text: "Have you experienced any issues related to blood pressure recently?", min: 1, max: 3, mid: 2, minLabel: "Low", maxLabel: "High" },
+            { text: "How would you rate the quality of your sleep?", min: 1, max: 5, mid: 3, minLabel: "Very poor", maxLabel: "Excellent" },
+            { text: "How often do you experience breathing difficulties?", min: 1, max: 5, mid: 3, minLabel: "Never", maxLabel: "Very frequently" },
+            { text: "How would you rate the noise levels in your environment?", min: 1, max: 5, mid: 3, minLabel: "Very quiet", maxLabel: "Extremely noisy" },
+            { text: "How do you think the living conditions around you are?", min: 1, max: 5, mid: 3, minLabel: "Very poor", maxLabel: "Excellent" },
+            { text: "How safe do you feel in your environment?", min: 1, max: 5, mid: 3, minLabel: "Not safe at all", maxLabel: "Very safe" },
+            { text: "How well are your basic needs (food, water, shelter) met?", min: 1, max: 5, mid: 3, minLabel: "Not met at all", maxLabel: "Fully met" },
+            { text: "How satisfied are you with your academic performance?", min: 1, max: 5, mid: 3, minLabel: "Very dissatisfied", maxLabel: "Very satisfied" },
+            { text: "How much study load do you think you have?", min: 1, max: 5, mid: 3, minLabel: "Very low", maxLabel: "Overwhelming" },
+            { text: "How would you describe your relationship with your teachers?", min: 1, max: 5, mid: 3, minLabel: "Not good", maxLabel: "Very good" },
+            { text: "How concerned are you about your future career?", min: 1, max: 5, mid: 3, minLabel: "Not concerned", maxLabel: "Extremely concerned" },
+            { text: "How strong is your social support system (family, friends, etc.)?", min: 1, max: 3, mid: 2, minLabel: "Weak", maxLabel: "Strong" },
+            { text: "How much peer pressure do you experience?", min: 1, max: 5, mid: 3, minLabel: "None", maxLabel: "Extremely high" },
+            { text: "How often do you engage in extracurricular activities?", min: 1, max: 5, mid: 3, minLabel: "Never", maxLabel: "Very frequently" },
+            { text: "Have you ever experienced bullying?", min: 1, max: 5, mid: 3, minLabel: "No bullying", maxLabel: "Severe bullying" }
+        ];
+
+        let currentQuestion = 0;
+        let responses = [];
+
+        // --- Global variables to store results data for PDF ---
+        let pdfStressScore = 0;
+        let pdfStressLevelSummary = ""; // Stores the full summary text from backend
+        let pdfActionPlanItems = []; // Stores the array of action plan strings from backend
+
+        // --- Functions for Assessment Flow ---
+        function loadQuestion() {
+            const q = questions[currentQuestion];
+            document.getElementById("question-text").textContent = q.text;
+            const slider = document.getElementById("question-slider");
+            slider.min = q.min; slider.max = q.max;
+            const defaultValue = responses[currentQuestion] !== undefined ? responses[currentQuestion] : Math.floor((parseInt(q.min) + parseInt(q.max)) / 2);
+            slider.value = defaultValue; updateSliderValue(defaultValue);
+            document.getElementById("min-label").textContent = q.minLabel; document.getElementById("max-label").textContent = q.maxLabel;
+            document.querySelector(".progress").style.width = `${(currentQuestion + 1) / questions.length * 100}%`;
+            document.querySelector(".question-counter").textContent = `Question ${currentQuestion + 1} of 20`;
+            document.getElementById("prev-btn").disabled = currentQuestion === 0; document.getElementById("next-btn").disabled = false;
+            document.getElementById("next-btn").textContent = (currentQuestion === questions.length - 1) ? "Submit" : "Next";
+        }
+        function updateSliderValue(value) {
+            document.getElementById("slider-value").textContent = `Value: ${value}`;
+        }
+
+        // --- Event Listeners for Assessment ---
+        document.getElementById("question-slider").addEventListener("input", function() {
+            updateSliderValue(this.value);
+        });
+        document.getElementById("next-btn").addEventListener("click", () => {
+            responses[currentQuestion] = parseInt(document.getElementById("question-slider").value);
+            if (currentQuestion < questions.length - 1) { currentQuestion++; loadQuestion(); } else {
+                document.getElementById("next-btn").disabled = true; document.getElementById("prev-btn").disabled = true;
+                document.getElementById("next-btn").textContent = "Processing..."; submitToBackend();
+            }
+        });
+        document.getElementById("prev-btn").addEventListener("click", () => {
+            if (currentQuestion > 0) { responses[currentQuestion] = parseInt(document.getElementById("question-slider").value); currentQuestion--; loadQuestion(); }
+        });
+
+        // --- Backend Submission and Fallback ---
+        function submitToBackend() {
+            fetch('http://localhost:5000/api/predict', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ responses: responses })
+            })
+            .then(response => {
+                if (!response.ok) { console.error('Network response error:', response.status, response.statusText); return response.text().then(text => { throw new Error(text || 'Server error'); }); }
+                return response.json();
+            })
+            .then(data => { displayResults(data); })
+            .catch(error => { console.error('Error fetching from backend:', error); alert("Could not reach the prediction server. Displaying estimated results."); calculateStressScoreFallback(); })
+            .finally(() => {
+                 if(document.getElementById("next-btn").textContent === "Processing..."){
+                     document.getElementById("next-btn").textContent = "Completed"; document.getElementById("prev-btn").disabled = true; document.getElementById("next-btn").disabled = true;
+                 }
+            });
+        }
+        function calculateStressScoreFallback() {
+            console.warn("Using fallback stress score calculation.");
+            let totalScore = responses.reduce((a, b) => (a + (b || 0)), 0);
+            let maxPossibleScore = questions.reduce((sum, q) => sum + parseInt(q.max), 0); let minPossibleScore = questions.reduce((sum, q) => sum + parseInt(q.min), 0);
+            let scoreRange = maxPossibleScore - minPossibleScore; let normalizedScore = scoreRange > 0 ? (totalScore - minPossibleScore) / scoreRange : 0;
+            let stressScore = normalizedScore * 2; stressScore = Math.min(2, Math.max(0, parseFloat(stressScore.toFixed(2))));
+            let stressLevelText = ""; let stressPlanSummary = ""; let stressPlanBullets = []; let color = "#805ad5";
+            if (stressScore < 0.5) { stressLevelText = "Low Stress"; color = "#4CAF50"; stressPlanSummary = "Maintain a balanced lifestyle."; stressPlanBullets = ["Stay physically active.", "Practice mindfulness.", "Ensure adequate sleep.", "Engage with social circle/hobbies."]; }
+            else if (stressScore < 1.0) { stressLevelText = "Moderate Stress"; color = "#FFC107"; stressPlanSummary = "Consider the following to prevent escalation."; stressPlanBullets = ["Practice deep breathing.", "Maintain routine.", "Reduce screen time.", "Limit caffeine, hydrate.", "Journal thoughts."]; }
+            else if (stressScore < 1.5) { stressLevelText = "Moderate to High Stress"; color = "#FF9800"; stressPlanSummary = "Try these stress reduction techniques."; stressPlanBullets = ["Use relaxation techniques.", "Practice time management.", "Seek social support.", "Listen to calming music.", "Take short breaks."]; }
+            else { stressLevelText = "High Stress"; color = "#F44336"; stressPlanSummary = "It's important to take action."; stressPlanBullets = ["Strongly consider professional help.", "Engage in safe physical activity.", "Avoid negative coping methods.", "Use stress relief apps.", "Prioritize self-care/boundaries."]; }
+            const fallbackData = { stress_score: stressScore, recommendations: { text: stressLevelText + ". " + stressPlanSummary, action_plan: stressPlanBullets, color: color } };
+            displayResults(fallbackData);
+        }
+
+        // --- MODIFIED Display Results on Page (Minimal Display) ---
+        function displayResults(data) {
+            console.log("Storing results for PDF:", data);
+            // --- Store data in global variables for PDF generation ---
+            pdfStressScore = parseFloat(data.stress_score).toFixed(2);
+            pdfStressLevelSummary = (typeof data.recommendations?.text === 'string') ? data.recommendations.text : "Stress Level Summary: N/A";
+            pdfActionPlanItems = (Array.isArray(data.recommendations?.action_plan)) ? data.recommendations.action_plan : [];
+            // ---
+            // --- Update LIMITED HTML elements on the page ---
+            document.getElementById("stress-score").textContent = pdfStressScore;
+            let percentage = (parseFloat(pdfStressScore) / 2) * 100;
+            let bar = document.getElementById("stress-bar");
+            bar.style.width = `${percentage}%`; bar.style.backgroundColor = data.recommendations?.color || '#805ad5';
+            document.querySelector(".assessment").style.display = "none"; document.querySelector(".results").style.display = "block";
+            document.getElementById("download-pdf").disabled = false; // Enable download button
+            // --- End of limited page updates ---
+        }
+
+        // ===================================================================
+        // == ENHANCED PDF Download Functionality (Detailed & Structured) ==
+        // ===================================================================
+        document.getElementById("download-pdf").addEventListener("click", function () {
+            if (document.querySelector(".results").style.display !== 'block' || this.disabled) {
+                 console.warn("PDF download attempted before results are ready."); return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
+
+            // --- Configuration & Colors ---
+            const pageHeight = doc.internal.pageSize.getHeight();
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const margin = 15;
+            const contentWidth = pageWidth - margin * 2;
+            let currentY = margin;
+            const lineHeight = 6; // Base line height, adjust as needed
+            const paragraphSpacing = 4; // Extra space between paragraphs/sections
+            const headingFontSize = 16;
+            const subHeadingFontSize = 12;
+            const textFontSize = 10;
+            const smallTextFontSize = 8;
+            const bulletIndent = margin + 5;
+            const bulletWidth = contentWidth - 5;
+
+            // Define Colors (RGB)
+            const COLOR_PRIMARY = [45, 55, 72];    // Dark Gray/Black for text
+            const COLOR_SECONDARY = [74, 85, 104]; // Medium Gray for less important text
+            const COLOR_ACCENT = [128, 90, 213];   // Purple (similar to #805ad5)
+            const COLOR_LOW_STRESS = [76, 175, 80];  // Green
+            const COLOR_MODERATE_STRESS = [255, 193, 7]; // Amber/Yellow
+            const COLOR_MOD_HIGH_STRESS = [255, 152, 0]; // Orange
+            const COLOR_HIGH_STRESS = [244, 67, 54];   // Red
+            const COLOR_LINE = [226, 232, 240];     // Light Gray for lines
+
+            // --- Helper Functions ---
+            function checkAndAddPage(requiredSpace) {
+                 if (currentY + requiredSpace > pageHeight - margin - 10) { doc.addPage(); currentY = margin; return true; } return false;
+             }
+            function drawLineSeparator() {
+                currentY += paragraphSpacing / 2;
+                doc.setDrawColor(COLOR_LINE[0], COLOR_LINE[1], COLOR_LINE[2]);
+                doc.setLineWidth(0.3);
+                doc.line(margin, currentY, pageWidth - margin, currentY);
+                currentY += paragraphSpacing;
+            }
+            function getStressLevelInfo(score) {
+                let levelText = "Not Determined";
+                let levelColor = COLOR_SECONDARY;
+                if (score < 0.5) { levelText = "Low Stress"; levelColor = COLOR_LOW_STRESS; }
+                else if (score < 1.0) { levelText = "Moderate Stress"; levelColor = COLOR_MODERATE_STRESS; }
+                else if (score < 1.5) { levelText = "Moderate to High Stress"; levelColor = COLOR_MOD_HIGH_STRESS; }
+                else if (score >= 1.5) { levelText = "High Stress"; levelColor = COLOR_HIGH_STRESS; }
+                return { text: levelText, color: levelColor };
+            }
+
+            // --- PDF Content Generation ---
+
+            // --- 1. Header: Logo & Title ---
+            const logoBase64 = 'data:image/png;base64,YOUR_BASE64_LOGO_STRING...'; // <--- PASTE YOUR LOGO BASE64 HERE
+            const logoWidth = 25; const logoHeight = 25;
+            try {
+                if (logoBase64.includes("YOUR_BASE64_LOGO_STRING")) { console.warn("PDF Logo: Placeholder detected."); doc.setFontSize(smallTextFontSize); doc.setTextColor(150); doc.text("[Logo]", margin, currentY + 5); currentY += 10;}
+                else { doc.addImage(logoBase64, 'PNG', margin, currentY, logoWidth, logoHeight); currentY += logoHeight + paragraphSpacing; }
+            } catch (e) { console.error("Error adding logo to PDF:", e); currentY += 5; }
+
+            checkAndAddPage(lineHeight * 2);
+            doc.setFontSize(headingFontSize); doc.setFont(undefined, 'bold'); doc.setTextColor(COLOR_PRIMARY[0], COLOR_PRIMARY[1], COLOR_PRIMARY[2]);
+            doc.text("MindTrack Stress Assessment Report", pageWidth / 2, currentY, { align: 'center' });
+            currentY += lineHeight * 2 + paragraphSpacing;
+
+            // --- 2. Score and Stress Level Section ---
+            const stressInfo = getStressLevelInfo(pdfStressScore); // Get level text and color
+
+            checkAndAddPage(lineHeight * 3);
+            doc.setFontSize(subHeadingFontSize); doc.setFont(undefined, 'normal'); doc.setTextColor(COLOR_PRIMARY[0], COLOR_PRIMARY[1], COLOR_PRIMARY[2]);
+            doc.text(`Your Stress Score:`, margin, currentY);
+            doc.setFont(undefined, 'bold');
+            doc.text(`${pdfStressScore}`, margin + 40, currentY); // Adjust X pos as needed
+
+            currentY += lineHeight * 1.5;
+
+            doc.setFont(undefined, 'normal');
+            doc.text(`Assessed Stress Level:`, margin, currentY);
+            doc.setFont(undefined, 'bold');
+            doc.setTextColor(stressInfo.color[0], stressInfo.color[1], stressInfo.color[2]); // Set color for level
+            doc.text(`${stressInfo.text}`, margin + 48, currentY); // Adjust X pos
+            doc.setTextColor(COLOR_PRIMARY[0], COLOR_PRIMARY[1], COLOR_PRIMARY[2]); // Reset text color
+            currentY += lineHeight + paragraphSpacing;
+
+            drawLineSeparator();
+
+            // --- 3. Interpretation / Summary Section ---
+            doc.setFontSize(subHeadingFontSize); doc.setFont(undefined, 'bold');
+            doc.text("Interpretation:", margin, currentY);
+            currentY += lineHeight * 1.5;
+
+            doc.setFontSize(textFontSize); doc.setFont(undefined, 'normal'); doc.setTextColor(COLOR_SECONDARY[0], COLOR_SECONDARY[1], COLOR_SECONDARY[2]);
+            if (pdfStressLevelSummary) {
+                 const summaryLines = doc.splitTextToSize(pdfStressLevelSummary, contentWidth);
+                 checkAndAddPage(summaryLines.length * lineHeight + paragraphSpacing);
+                 doc.text(summaryLines, margin, currentY);
+                 currentY += summaryLines.length * lineHeight + paragraphSpacing;
+            } else {
+                 checkAndAddPage(lineHeight);
+                 doc.text("A summary of your stress level could not be generated.", margin, currentY, { fontStyle: 'italic' });
+                 currentY += lineHeight + paragraphSpacing;
+            }
+
+            drawLineSeparator();
+
+            // --- 4. Personalized Recommendations Section ---
+            doc.setFontSize(subHeadingFontSize); doc.setFont(undefined, 'bold'); doc.setTextColor(COLOR_PRIMARY[0], COLOR_PRIMARY[1], COLOR_PRIMARY[2]);
+            doc.text("Personalized Recommendations:", margin, currentY);
+            currentY += lineHeight;
+
+            doc.setFontSize(textFontSize); doc.setFont(undefined, 'normal'); doc.setTextColor(COLOR_SECONDARY[0], COLOR_SECONDARY[1], COLOR_SECONDARY[2]);
+            doc.text("Based on your assessment, here are some strategies that may be helpful:", margin, currentY);
+            currentY += lineHeight * 1.5;
+
+
+            // Add Action Plan Items as Bulleted List
+            if (pdfActionPlanItems.length > 0) {
+                pdfActionPlanItems.forEach(item => {
+                    const itemLines = doc.splitTextToSize(item, bulletWidth);
+                    const requiredSpaceForItem = itemLines.length * lineHeight + (lineHeight / 2);
+                    checkAndAddPage(requiredSpaceForItem);
+
+                    doc.setTextColor(COLOR_PRIMARY[0], COLOR_PRIMARY[1], COLOR_PRIMARY[2]); // Use primary color for bullets/text
+                    doc.setFontSize(textFontSize + 2); // Slightly larger bullet
+                    doc.text("•", margin, currentY + (lineHeight * 0.7)); // Adjust Y offset for bullet alignment
+                    doc.setFontSize(textFontSize);
+
+                    doc.text(itemLines, bulletIndent, currentY);
+                    currentY += requiredSpaceForItem;
+                });
+            } else {
+                 checkAndAddPage(lineHeight);
+                 doc.setFont(undefined, 'italic'); doc.setTextColor(COLOR_SECONDARY[0], COLOR_SECONDARY[1], COLOR_SECONDARY[2]);
+                 doc.text("(No specific recommendations were provided for this score.)", margin, currentY);
+                 currentY += lineHeight * 1.5;
+            }
+
+            // --- 5. Disclaimer (Optional but Recommended) ---
+            if (currentY > pageHeight - margin - 25) { // If close to bottom, add new page
+                 doc.addPage(); currentY = margin;
+            } else {
+                 currentY += paragraphSpacing; // Add some space before disclaimer
+            }
+            drawLineSeparator();
+            doc.setFontSize(smallTextFontSize); doc.setFont(undefined, 'italic'); doc.setTextColor(COLOR_SECONDARY[0], COLOR_SECONDARY[1], COLOR_SECONDARY[2]);
+            const disclaimerText = "Disclaimer: This report is based on a self-assessment and is intended for informational purposes only. It is not a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of your physician or other qualified health provider with any questions you may have regarding a medical condition.";
+            const disclaimerLines = doc.splitTextToSize(disclaimerText, contentWidth);
+            checkAndAddPage(disclaimerLines.length * (lineHeight * 0.8));
+            doc.text(disclaimerLines, margin, currentY);
+            currentY += disclaimerLines.length * (lineHeight * 0.8);
+
+            // --- 6. Footer ---
+            const footerY = pageHeight - 10;
+            doc.setFontSize(smallTextFontSize); doc.setFont(undefined, 'normal'); doc.setTextColor(COLOR_SECONDARY[0], COLOR_SECONDARY[1], COLOR_SECONDARY[2]);
+            const footerText = `© ${new Date().getFullYear()} MindTrack. All rights reserved. | Report generated on: ${new Date().toLocaleDateString()}`;
+            const currentPageForFooter = doc.internal.getNumberOfPages();
+            doc.setPage(currentPageForFooter);
+            doc.text(footerText, pageWidth / 2, footerY, { align: 'center' });
+
+            // --- 7. Border ---
+            const pageCount = doc.internal.getNumberOfPages();
+            doc.setDrawColor(COLOR_LINE[0], COLOR_LINE[1], COLOR_LINE[2]); doc.setLineWidth(0.5);
+            for (let i = 1; i <= pageCount; i++) {
+                doc.setPage(i); doc.rect(margin / 2, margin / 2, pageWidth - margin, pageHeight - margin);
+            }
+
+            // --- 8. Save the PDF ---
+            doc.save("MindTrack_Stress_Assessment_Report_Detailed.pdf");
+
+        });
+        // ===================================================================
+        // == End of ENHANCED PDF Download Functionality ==
+        // ===================================================================
+
+        // --- Initial Load ---
+        loadQuestion(); // Load the first question when the page opens
+    </script>
+
+</body>
+</html>
